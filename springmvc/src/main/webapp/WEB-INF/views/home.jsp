@@ -27,7 +27,16 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 		</c:forEach>
 	</table>
 	
+	<c:if test="${member == null}">
+		<a href="login">로그인</a>
+	</c:if>
+	<c:if test="${member != null}">
+		${member.nickname}님<a href="logout">로그아웃</a>
+	</c:if>
+	<br/>
+	
 	<a href="insert">데이터 삽입</a><br/>
+	<a href="chat">WebSocket을 이용한 채팅 구현</a><br/>
 	<a href="item.xls">엑셀로 내려받기</a><br/>
 	<a href="item.pdf">pdf로 내려받기</a><br/>
 	<a href="item1.json">json으로 내려받기</a><br/>

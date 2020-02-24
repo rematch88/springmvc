@@ -26,5 +26,10 @@ public class HibernateDao {
 		return sessionFactory.getCurrentSession().get(Item.class, itemid);
 	}
 	
+	//데이터 1개를 삽입하는 메소드
+	public int insertItem(Item item) {
+		sessionFactory.getCurrentSession().save(item);
+		return 1;
+	}
 	
 }

@@ -15,10 +15,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.pk.db.domain.Item;
 import com.pk.db.domain.ItemReport;
+import com.pk.db.domain.Member;
 import com.pk.db.service.ItemService;
+import com.pk.db.service.MemberService;
 
 
 @Controller
@@ -98,4 +102,51 @@ public class HomeController {
 		return "insert";
 	}
 	
+	
+	@RequestMapping(value = "/insert", method = RequestMethod.POST)
+	public String insert(MultipartHttpServletRequest request, Model model) {
+		//서비스의 메소드를 호출
+		itemService.insertItem(request);
+				
+		//삽입, 삭제, 갱신 등 새로고침을 했을 때 이전 작업을 다시 수행하면 안되는 경우에는
+		//리다이렉트를 해야 합니다.
+		//리다이렉트를 할 때는 View 이름이 아니고 URL을 작성
+		//뷰이름을 리턴
+		return "redirect:./";
+	}
+	
+	//chat이라는 요청이 오면 chat이라는 문자열을 가지고 ViewResolver 설저을 확인해서
+	//뷰 페이지를 결정 - WEB-INF/view/?.jsp
+	@RequestMapping(value = "/chat", method = RequestMethod.GET)
+	public String chat(HttpServletRequest request, Model model) {
+		//뷰이름을 리턴
+		return "chat";
+	}
+	
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login(HttpServletRequest request, Model model) {
+		//뷰이름을 리턴
+		return "login";
+	}
+	
+	@Autowired
+	private MemberService memberService;
+	
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String login(HttpServletRequest request, Model model, RedirectAttributes attrs) {
+		//RedirectAttributes는 redirect 할 때 1번만 사용하는 데이터를
+		//저장할 수 있는 Spring이 제공하는 클래스
+		
+		//서비스 메소드 호출
+		Member member = memberService.login(request);
+		//로그인 처리도 redirect로 이동
+		if(member == null) {
+			//로그인 실패의 경우 msg를 저장하고 login으로 다시 이동
+			attrs.addFlashAttribute("msg", "없는 아이디이거나 잘못된 비밀번호입니다.");
+			return "redirect:login";
+		}else {
+			//로그인 성공이면 메인 페이지로 이동
+			return "redirect:./";
+		}
+	}
 }
