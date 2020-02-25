@@ -16,7 +16,6 @@
 </head>
 <body>
 	<a href="./">메인화면으로 이동</a><br/>
-	이름<input type="text" id="nickname"/>
 	<input type="button" id="enterbtn" value="입장"/>
 	<input type="button" id="exitbtn" value="나가기"/>
 	
@@ -57,7 +56,7 @@
 			appendMessage(data);
 		}
 		var send = function(){
-			var nickname = document.getElementById("nickname").value;
+			var nickname = '${member.nickname}';
 			var msg = document.getElementById("message").value;
 			wsocket.send(nickname + ":" + msg)
 			document.getElementById("message").value = '';

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,8 +146,32 @@ public class HomeController {
 			attrs.addFlashAttribute("msg", "없는 아이디이거나 잘못된 비밀번호입니다.");
 			return "redirect:login";
 		}else {
+			//이동할 URL이 있는지 확인
+			String dest = (String)request.getSession().getAttribute("dest");
+			if(dest != null) {
+				//dest에 저장된 내용을 삭제 - 계속 남아서 문제를 발생 시킬 가능성이 있음
+				request.getSession().removeAttribute("dest");
+				return "redirect:" + dest;
+			}
+			
 			//로그인 성공이면 메인 페이지로 이동
 			return "redirect:./";
 		}
 	}
+	
+	
+	//로그아웃을 처리하는 메소드
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public String logout(HttpServletRequest request, HttpSession session) {
+		//Session 객체 만들기
+		//request.getSession() 해도되고 Controller의 요청 처리 메소드에
+		//매개변수로 추가해도 됩니다.
+		
+		//세션 초기화
+		session.invalidate();
+		//로그인 로그아웃도 redirect를 합니다.
+		return "redirect:./";
+	}
+	
+	
 }
